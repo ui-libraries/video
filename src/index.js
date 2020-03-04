@@ -1,47 +1,28 @@
-/* JSHint inline rules */
-/* jshint node: true, browser: true */
-/* globals QBMediaRecorder, Promise */
+import adapter from 'webrtc-adapter'
+import QBMediaRecorder from 'media-recorder-js'
+import AWS from 'aws-sdk'
+import { s3 } from './config'
 
-'use strict';
-
-var rec;
+let rec;
 // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-photo-album.html
-// https://aws.amazon.com/blogs/developer/announcing-the-amazon-s3-managed-uploader-in-the-aws-sdk-for-javascript/
 
-var albumBucketName = "mbutler";
-var bucketRegion = "us-east-1";
-var IdentityPoolId = "us-east-1:6241328d-dbef-44f5-8398-6816d9511825";
 
-AWS.config.update({
-  region: bucketRegion,
-  credentials: new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: IdentityPoolId
-  })
-});
-
-var s3 = new AWS.S3({
-  apiVersion: "2006-03-01",
-  params: { Bucket: albumBucketName }
-});
-
-var notify = {
+let notify = {
     ui: document.querySelector('.j-notify'),
     hide: function() {
         this.ui.classList.remove('notify-active');
     },
-    show: function(txt) {
-        var n = this;
+    show: (txt) => {
+        this.ui.textContent = txt;
+        this.ui.classList.add('notify-active');
 
-        n.ui.textContent = txt;
-        n.ui.classList.add('notify-active');
-
-        var timerId = setTimeout(function() {
-            n.hide();
+        let timerId = setTimeout(function() {
+            this.hide();
         }, 5000);
     }
 };
 
-var resultCard = {
+let resultCard = {
     blob: null, // saved a blob after stopped a record
     ui: {
         wrap: document.querySelector('.j-result-card'),
@@ -67,10 +48,10 @@ var resultCard = {
         this.ui.download.disabled = true;
     },
     setupListeners: function(rec) {
-        var self = this;
+        let self = this;
 
-        var evClear = new CustomEvent('clear');
-        var evDownload = new CustomEvent('download');
+        let evClear = new CustomEvent('clear');
+        let evDownload = new CustomEvent('download');
 
         self.ui.clear.addEventListener('click', function() {
             self.ui.video.pause();
@@ -85,7 +66,7 @@ var resultCard = {
     }
 };
 
-var inputCard = {
+let inputCard = {
     audioRecorderWorkerPath: '../qbAudioRecorderWorker.js',
     stream: null,
     devices: {
@@ -106,10 +87,10 @@ var inputCard = {
         selectMimeTypeFormats: document.getElementById('j-mimeTypes')
     },
     _createOptions: function(type) {
-        var docfrag = document.createDocumentFragment();
+        let docfrag = document.createDocumentFragment();
 
         /* create a default option */
-        var optDef = document.createElement('option');
+        let optDef = document.createElement('option');
             optDef.textContent = `Choose an input ${type}-device`;
             optDef.value = 'default';
 
@@ -117,7 +98,7 @@ var inputCard = {
 
         /* create a options with available sources */
         this.devices[type].forEach(function(device, index) {
-            var option = document.createElement('option');
+            let option = document.createElement('option');
 
             option.value = device.deviceId;
             option.textContent = device.label || `${index + 1} ${type} source`;
@@ -126,7 +107,7 @@ var inputCard = {
         });
 
         /* create a option which off a type a media */
-        var optOff = document.createElement('option');
+        let optOff = document.createElement('option');
         optOff.textContent = `Off ${type} source`;
         optOff.value = 0;
 
@@ -135,10 +116,10 @@ var inputCard = {
         return docfrag;
     },
     _createMimeTypesOptions: function(mimeTypes) {
-        var docfrag = document.createDocumentFragment();
+        let docfrag = document.createDocumentFragment();
 
         mimeTypes.forEach(function(mimeType) {
-            var option = document.createElement('option');
+            let option = document.createElement('option');
 
             option.value = mimeType;
             option.textContent = mimeType;
@@ -156,9 +137,9 @@ var inputCard = {
         return docfrag;
     },
     _processDevices: function(devices) {
-        var self = this;
+        let self = this;
 
-        var docfragAudio = document.createDocumentFragment(),
+        let docfragAudio = document.createDocumentFragment(),
             docfragVideo = document.createDocumentFragment();
 
         devices.forEach(function(device) {
@@ -186,7 +167,7 @@ var inputCard = {
         }
 
         if(QBMediaRecorder.getSupportedMimeTypes().length) {
-            var audioMimeTypes = QBMediaRecorder.getSupportedMimeTypes("audio"),
+            let audioMimeTypes = QBMediaRecorder.getSupportedMimeTypes("audio"),
                 videoMimeTypes = QBMediaRecorder.getSupportedMimeTypes("video"),
                 allMimeTypes = videoMimeTypes.concat(audioMimeTypes);
 
@@ -195,7 +176,7 @@ var inputCard = {
         }
     },
     getDevices: function() {
-        var self = this;
+        let self = this;
 
         navigator.mediaDevices.enumerateDevices()
             .then(function(devices) {
@@ -216,17 +197,17 @@ var inputCard = {
         this.ui.video.play();
     },
     getUserMedia: function(attrs) {
-        var constraints = attrs || { audio: true, video: true };
+        let constraints = attrs || { audio: true, video: true };
 
         return navigator.mediaDevices.getUserMedia(constraints)
     },
     _getSources: function() {
-        var sVideo = this.ui.selectVideoSource,
+        let sVideo = this.ui.selectVideoSource,
             sAudio = this.ui.selectAudioSource,
             selectedAudioSource = sAudio.options[sAudio.selectedIndex].value,
             selectedVideoSource = sVideo.options[sVideo.selectedIndex].value;
 
-        var constraints = {};
+        let constraints = {};
 
         if(selectedAudioSource === 'default') {
             constraints.audio = true;
@@ -251,16 +232,16 @@ var inputCard = {
         return constraints;
     },
     _toggleAudioTypesSelect: function(state) {
-        var audioTypes = document.getElementsByClassName('j-audioMimeType');
+        let audioTypes = document.getElementsByClassName('j-audioMimeType');
 
-        for (var i = 0; i < audioTypes.length; i++) {
+        for (let i = 0; i < audioTypes.length; i++) {
             audioTypes[i].disabled = state;
         }
     },
     _toggleVideoTypesSelect: function(state) {
-        var videoTypes = document.getElementsByClassName('j-videoMimeType');
+        let videoTypes = document.getElementsByClassName('j-videoMimeType');
 
-        for (var i = 0; i < videoTypes.length; i++) {
+        for (let i = 0; i < videoTypes.length; i++) {
             videoTypes[i].disabled = state;
         }
     },
@@ -270,13 +251,13 @@ var inputCard = {
         });
     },
     _setupListeners: function() {
-        var self = this;
+        let self = this;
 
-        var evStart = new CustomEvent('started');
-        var evPause = new CustomEvent('paused');
-        var evResume = new CustomEvent('resumed');
-        var evStop = new CustomEvent('stopped');
-        var evChange = new CustomEvent('changed');
+        let evStart = new CustomEvent('started');
+        let evPause = new CustomEvent('paused');
+        let evResume = new CustomEvent('resumed');
+        let evStop = new CustomEvent('stopped');
+        let evChange = new CustomEvent('changed');
 
         self.ui.start.addEventListener('click', function() {
             self.ui.start.disabled = true;
@@ -323,7 +304,7 @@ var inputCard = {
         });
 
         function handleSources() {
-            var constrains = self._getSources();
+            let constrains = self._getSources();
             
             self._stopStreaming();
             self.stream = null;
@@ -337,7 +318,7 @@ var inputCard = {
         }
 
         function handleRecordMimeType() {
-            var sMimeType = self.ui.selectMimeTypeFormats,
+            let sMimeType = self.ui.selectMimeTypeFormats,
                 selectedMimeType = sMimeType.options[sMimeType.selectedIndex].value;
 
             rec.toggleMimeType(selectedMimeType);
@@ -348,7 +329,7 @@ var inputCard = {
         self.ui.selectMimeTypeFormats.addEventListener('change', handleRecordMimeType);
     },
     init: function() {
-        var self = this;
+        let self = this;
 
         return new Promise(function(resolve, reject) {
             self.getUserMedia()
@@ -376,7 +357,7 @@ inputCard.init()
     });
 
 function initRecorder() {
-    var opts = {
+    let opts = {
         onstop: function onStoppedRecording(blob) {
             resultCard.blob = blob;
             resultCard.attachVideo(blob);
@@ -413,18 +394,14 @@ function initRecorder() {
 
     resultCard.ui.wrap.addEventListener('download', function() {
         //rec.download(null, resultCard.blob);
-        var bucket = new AWS.S3({params: {Bucket: 'mbutler'}});
-        var params = {Key: 'test', ContentType: 'video/webm', Body: resultCard.blob};
+        let res = window.localStorage.getItem('response');
+        let q = window.localStorage.getItem('survey');
+        let key = res + '_' + q
+        let bucket = new AWS.S3({params: {Bucket: 'mbutler'}});
+        let params = {Key: key, ContentType: 'video/webm', Body: resultCard.blob};
         bucket.upload(params, function (err, data) {
             console.log(err ? 'ERROR!' : 'UPLOADED.');
         });
     }, false);
 }
-
-
-
-
-
-
-
 

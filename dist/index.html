@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Upload video</title>
+    <title>Media Stream Recorder by Quickblox</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,11 +13,16 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <form action='' method='POST' enctype='multipart/form-data'>
-        <input type='file' name='photoupload' id="photoupload"><br>
-        <input type='submit' name='upload_btn' value='upload'>
-    </form>
     <div class="content">
+        <header class="title wrap">
+            <h1 class="title_main text-center">Media Stream Recorder
+                <span class="title_sub">by&nbsp;Quickblox</span>
+            </h1>
+        </header>
+
+        <aside class="toast wrap">
+            This demo requires Firefox&nbsp;49, Chrome&nbsp;49, Chrome&nbsp;for&nbsp;Android&nbsp;53, Opera&nbsp;41 or&nbsp;later. The https is required.
+        </aside>
 
         <main>
             <div class="columns wrap">
@@ -70,7 +75,7 @@
                             <h5 class="card-title">Record</h5>
                             <div class="btn-group btn-group-block">
                                 <button class="btn j-clear" disabled>Clear</button>
-                                <button class="btn j-download" disabled>Upload</button>
+                                <button class="btn j-download" disabled>Download</button>
                             </div>
                         </div>
                     </div>
@@ -79,30 +84,16 @@
         </main>
     </div>
 
+    <footer class="footer">
+        <p class="lead ">
+            See <a href="../docs/index.html" target="_blank">docs</a> and <a href="https://github.com/QuickBlox/javascript-media-recorder/" target="_blank">source&nbsp;code</a>
+        </p>
+    </footer>
+
     <div class="j-notify notify toast toast-danger"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.630.0/aws-sdk.min.js"></script>
+
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="js/qbMediaRecorder.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        document.getElementById('photoupload').onchange = function(e) {
-            console.log('adding da foto')
-            var files = document.getElementById("photoupload").files;
-            if (!files.length) {
-            return alert("Please choose a file to upload first.");
-            }
-            var file = files[0];
-            var fileName = file.name;
-            console.log(file.type)
-        
-            var photoKey = fileName;
-        
-            var bucket = new AWS.S3({params: {Bucket: 'mbutler'}});
-            var params = {Key: fileName, ContentType: file.type, Body: file};
-            bucket.upload(params, function (err, data) {
-                console.log(err ? 'ERROR!' : 'UPLOADED.');
-            });
-        };
-    </script>
+    <script src="qbMediaRecorder.js"></script>
+    <script src="bundle.js"></script>
 </body>
 </html>
