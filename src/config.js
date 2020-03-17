@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk'
 
-const albumBucketName = 'mbutler'
+export const albumBucketName = 'survey-webcam'
 const bucketRegion = 'us-east-1'
-const identityPoolId = 'us-east-1:6241328d-dbef-44f5-8398-6816d9511825'
+const identityPoolId = 'us-east-1:f7603a39-0ba9-4523-96dd-fe81991e80f3'
 
 AWS.config.update({
     region: bucketRegion,

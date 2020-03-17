@@ -1,10 +1,12 @@
 import adapter from 'webrtc-adapter'
 import QBMediaRecorder from 'media-recorder-js'
 import AWS from 'aws-sdk'
-import { s3 } from './config'
+import { s3, albumBucketName } from './config'
 
 let rec;
 // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-photo-album.html
+document.getElementById("record-box").style.display = "none"
+document.getElementById("record-source").style.display = "none"
 
 
 let notify = {
@@ -28,7 +30,7 @@ let resultCard = {
         wrap: document.querySelector('.j-result-card'),
         video: document.querySelector('.j-video_result'),
         clear: document.querySelector('.j-clear'),
-        download: document.querySelector('.j-download')
+        download: document.querySelector('.j-upload')
     },
     toggleBtn: function(state) {
         this.ui.clear.disabled = state;
@@ -67,7 +69,7 @@ let resultCard = {
 };
 
 let inputCard = {
-    audioRecorderWorkerPath: '../qbAudioRecorderWorker.js',
+    audioRecorderWorkerPath: '../node_modules/media-recorder-js/src/qbAudioRecorderWorker.js',
     stream: null,
     devices: {
         audio: [],
@@ -370,7 +372,10 @@ function initRecorder() {
     resultCard.setupListeners();
 
     inputCard.ui.wrap.addEventListener('started', function() {
+        document.getElementById("record-box").style.display = "block"
+        document.getElementById("record-source").style.display = "block"
         rec.start(inputCard.stream);
+        document.getElementById("record-title").innerHTML = "Recording...";
     }, false);
 
     inputCard.ui.wrap.addEventListener('paused', function() {
@@ -388,6 +393,9 @@ function initRecorder() {
     }, false);
 
     inputCard.ui.wrap.addEventListener('stopped', function() {
+        document.getElementById("record-box").style.display = "none"
+        document.getElementById("record-source").style.display = "none"
+        document.getElementById("record-title").innerHTML = "Press camera icon to begin recording.";
         rec.stop();
         resultCard.toggleBtn(false);
     }, false);
@@ -397,7 +405,7 @@ function initRecorder() {
         let res = window.localStorage.getItem('response');
         let q = window.localStorage.getItem('survey');
         let key = res + '_' + q
-        let bucket = new AWS.S3({params: {Bucket: 'mbutler'}});
+        let bucket = new AWS.S3({params: {Bucket: albumBucketName}});
         let params = {Key: key, ContentType: 'video/webm', Body: resultCard.blob};
         bucket.upload(params, function (err, data) {
             console.log(err ? 'ERROR!' : 'UPLOADED.');
