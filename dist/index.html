@@ -18,13 +18,13 @@
             <div class="columns wrap">
                 <div class="column col-6 col-xs-12">
                     <div class="card j-card">
-                        <div id="record-box" class="card-image">
+                        <div class="card-image">
                             <div class="video-responsive">
                                 <video class=" j-video_local video" controls muted></video>
                             </div>
                         </div>
                         
-                        <div id="record-source" class="source">
+                        <div class="source">
                             <div class="form-group">
                                 <select id="j-audioSource" class="invisible form-select select-sm">
                                 </select>
@@ -42,15 +42,13 @@
                         </div>
 
                         <div class="card-footer">
-                            <h5 id="record-title" class="card-title">Press camera icon to begin recording.</h5>
-                            
-                                <span class="j-start" style="font-size: 48px; color: black;">
-                                    <i class="fas fa-camera"></i>
-                                  </span>
+                            <h5 class="card-title">Recording</h5>
+                            <div class="btn-group btn-group-block">
+                                <button class="btn j-start">Start</button>
                                 <button class="btn j-pause" disabled>Pause</button>
                                 <button class="btn j-resume" disabled>Resume</button>
                                 <button class="btn j-stop" disabled>Stop</button>
-                            
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -67,7 +65,7 @@
                             <h5 class="card-title">Record</h5>
                             <div class="btn-group btn-group-block">
                                 <button class="btn j-clear" disabled>Clear</button>
-                                <button class="btn j-upload" disabled>Upload Video</button>
+                                <button class="btn j-download" disabled>Download</button>
                             </div>
                         </div>
                     </div>
@@ -75,8 +73,15 @@
             </div>
         </main>
     </div>
+
+    <footer class="footer">
+        <p class="lead ">
+            See <a href="../docs/index.html" target="_blank">docs</a> and <a href="https://github.com/QuickBlox/javascript-media-recorder/" target="_blank">source&nbsp;code</a>
+        </p>
+    </footer>
+
     <div class="j-notify notify toast toast-danger"></div>
-    <script src="https://kit.fontawesome.com/15d07c474c.js" crossorigin="anonymous"></script>
-    <script src="bundle.js"></script>
+
+    <script src="js/bundle.js"></script>
 </body>
 </html>
