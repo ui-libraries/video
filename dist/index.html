@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Media Stream Recorder by Quickblox</title>
+    <title>Video Survey</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -42,12 +42,14 @@
                         </div>
 
                         <div class="card-footer">
-                            <h5 class="card-title">Recording</h5>
-                            <div class="btn-group btn-group-block">
+                            <h5 id="record-title" class="card-title">Press Start to begin recording.</h5>
+                            <div id="record-button-block" class="btn-group btn-group-block">
                                 <button class="btn j-start">Start</button>
                                 <button class="btn j-pause" disabled>Pause</button>
                                 <button class="btn j-resume" disabled>Resume</button>
                                 <button class="btn j-stop" disabled>Stop</button>
+                                <span id="upload-button" class="btn j-download" style="font-size: 24px;"><i class="fas fa-cloud-upload-alt"></i></span>
+                                <!-- <button class="btn j-download" disabled>Upload</button> -->
                             </div>
                         </div>
                     </div>
@@ -74,14 +76,8 @@
         </main>
     </div>
 
-    <footer class="footer">
-        <p class="lead ">
-            See <a href="../docs/index.html" target="_blank">docs</a> and <a href="https://github.com/QuickBlox/javascript-media-recorder/" target="_blank">source&nbsp;code</a>
-        </p>
-    </footer>
-
     <div class="j-notify notify toast toast-danger"></div>
-
+    <script src="https://kit.fontawesome.com/15d07c474c.js" crossorigin="anonymous"></script>
     <script src="js/bundle.js"></script>
 </body>
 </html>

@@ -23,7 +23,7 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     IdentityPoolId: 'us-east-1:af2db267-d367-4bce-9b0a-05862a21d943',
 });
 */
-
+document.getElementById("upload-button").style.display = "none"
 
 var notify = {
     ui: document.querySelector('.j-notify'),
@@ -391,6 +391,7 @@ function initRecorder() {
 
     inputCard.ui.wrap.addEventListener('started', function() {
         rec.start(inputCard.stream);
+        document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"><i class="fas fa-circle"></i> Now recording</span>`;
     }, false);
 
     inputCard.ui.wrap.addEventListener('paused', function() {
@@ -410,6 +411,8 @@ function initRecorder() {
     inputCard.ui.wrap.addEventListener('stopped', function() {
         rec.stop();
         resultCard.toggleBtn(false);
+        document.getElementById("record-title").innerHTML = `Press Start to begin recording.`
+        document.getElementById("upload-button").style.display = "block"
     }, false);
 
     resultCard.ui.wrap.addEventListener('download', function() {
@@ -420,6 +423,11 @@ function initRecorder() {
         let bucket = new AWS.S3({params: {Bucket: bucketName}});
         let params = {Key: key, ContentType: 'video/webm', Body: resultCard.blob};
         bucket.upload(params, function (err, data) {
+            if (err) {
+                document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"> Error uploading</span>`
+            } else {
+                document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"> Successfully uploaded</span>`
+            }
             console.log(err ? 'ERROR!' : 'UPLOADED.');
         });
     }, false);
