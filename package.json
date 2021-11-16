@@ -43,7 +43,7 @@
     ]
   },
   "dependencies": {
-    "aws-sdk": "^2.632.0",
+    "aws-sdk": "^2.814.0",
     "media-recorder-js": "^2.1.0",
     "webrtc-adapter": "^7.5.0"
   }
